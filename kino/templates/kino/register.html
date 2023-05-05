@@ -1,0 +1,23 @@
+{% extends 'kino/base.html' %}
+
+{% block content %}
+<div class="login-page">
+    <div class="form">
+        <form class="register-form"></form>
+
+<form method="post">
+    {% csrf_token %}
+
+{% for f in form %}
+<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+<div class="form-error">{{ f.errors }}</div>
+{% endfor %}
+
+    <button type="submit">Регистрация</button>
+    </div>
+</form>
+    </div>
+    </div>
+
+{% endblock %}
+

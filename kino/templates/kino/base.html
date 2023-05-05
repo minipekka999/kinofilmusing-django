@@ -1,0 +1,169 @@
+{% load static %}
+{% load kino_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{title}}</title>
+	<link type="text/css" href="{% static 'kino/css/styles.css' %}" rel="stylesheet" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="shortcut icon" href="{% static 'kino/images/main.jpg' %}" type="image/x-icon"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<table class="table-page" border=0 cellpadding="0" cellspacing="0">
+<tr><td valign=top>
+{% block mainmenu %}
+		<div class="header">
+			<ul id="mainmenu" class="mainmenu">
+			<li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
+{% for m in menu %}
+			<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+{% endfor %}
+				{% if request.user.is_authenticated %}
+				<li class="last">{{user.username}} | <a href="{% url 'logoutt' %}">Выйти</a> </li>
+				{% else %}
+				<li class="last"> <a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'loginn' %}">Войти</a></li>
+				{% endif %}
+			</ul>
+			<div class="clear"></div>
+		</div>
+{% endblock mainmenu %}
+
+
+<table class="table-content" border=0 cellpadding="0" cellspacing="0">
+<tr>
+
+	{% load cache %}
+
+	<td valign="top" class="left-chapters">
+	<ul id="leftchapters">
+
+{% if cat_selected == 0 %}
+		<li class="selected">Все категории</li>
+{% else %}
+		<li><a href="{% url 'home' %}">Все категории</a></li>
+{% endif %}
+
+{% for c in cats %}
+		{% if c.movie__count > 0 %}
+		{% if c.pk == cat_selected %}
+		<li class="selected">{{c.name}}</li>
+		{% else %}
+		<li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
+        {% endif %}
+		{% endif %}
+		{% endfor %}
+
+
+		<li class="share">
+		<p>Наш канал</p>
+		<a class="share-yt" href="https://www.youtube.com/channel/UChdwyvbzDRDb3LRZZDK75HQ" target="_blank" rel="nofollow"></a>
+		</li>
+	</ul>
+</td>
+<td valign="top" class="content">
+
+	{% block breadcrumbs %}
+	{% endblock %}
+
+
+	<div class="content-text">
+{% block content %}
+{% endblock %}
+{% if page_obj.has_other_pages %}
+<nav class="list-pages">
+    <ul>
+{% if page_obj.has_previous %}
+<li class="page-num">
+	<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+</li>
+{% endif %}
+
+        {% for p in paginator.page_range %}
+		{% if page_obj.number == p %}
+        <li class="page-num page-num-selected">{{ p }}</li>
+		{% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2  %}
+        <li class="page-num">
+            <a href="?page={{ p }}">{{ p }}</a>
+        </li>
+		{% endif %}
+        {% endfor %}
+
+{% if page_obj.has_next %}
+<li class="page-num">
+	<a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+</li>
+{% endif %}
+
+    </ul>
+</nav>
+{% endif %}
+	</div>
+
+</td></tr></table>
+</td></tr>
+
+<tr><td valign=top>
+	<footer class="footer-distributed">
+
+			<div class="footer-left">
+
+				<h3>Kino<span>Film</span></h3>
+
+				<p class="footer-links">
+					<a href="#" class="link-1">Home</a>
+
+					<a href="#">About</a>
+
+					<a href="#">Contact</a>
+				</p>
+
+				<p class="footer-company-name">Google Company © 2023</p>
+			</div>
+
+			<div class="footer-center">
+
+				<div>
+					<i class="fa fa-map-marker"></i>
+					<p><span>Жандосова 55</span> Алматы, Казахстан</p>
+				</div>
+
+				<div>
+					<i class="fa fa-phone"></i>
+					<p>Возникли вопросы?:</p>
+				</div>
+				<div>
+					<i class="fa fa-phone"></i>
+					<p>+77779712188</p>
+				</div>
+
+				<div>
+					<i class="fa fa-envelope"></i>
+					<p><a href="mailto:support@company.com">kinofilm@gmail.com</a></p>
+				</div>
+
+			</div>
+
+			<div class="footer-right">
+
+				<p class="footer-company-about">
+					<span>О сайте</span>
+					На нашем проекте вы сможете найти фильм. Посмотреть постер, подробное описание.И решить стоит ли его вам смотреть.
+					Сайт создан исключительно для учебы.
+				</p>
+
+				<div class="footer-icons">
+
+					<a href="https://m.facebook.com/profile.php?eav=AfZSzDTU3aIjgo4AblILcbjwS1Xc_Fac-M_GErcVUMzniZupwWrTfjTmy9ZUZCZX_ZE&paipv=0"><i class="fa fa-facebook"></i></a>
+					<a href="https://twitter.com/powerforlux"><i class="fa fa-twitter"></i></a>
+					<a href="https://github.com/PowerForLuxx/Django1"><i class="fa fa-github"></i></a>
+
+				</div>
+
+			</div>
+
+		</footer>
+</td></tr></table>
+
+</body>
+</html>
